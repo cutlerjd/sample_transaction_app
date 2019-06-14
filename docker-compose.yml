@@ -1,0 +1,65 @@
+version: '2.4'
+
+services:
+  nginx:
+    links:
+      - api
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    volumes:
+      - app:/app
+    ports:
+      - 80:80
+    depends_on:
+      - api
+      - frontend
+        
+  api:
+    links:
+      - postgres
+    restart: always
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      target: prod
+    environment:
+      PORT: 3001
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: transactionapp
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: prod
+    volumes:
+      - app:/app
+
+  postgres:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: transactionapp
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U admin -h 127.0.0.1 -d transactionapp
+
+volumes:
+  app:
+    driver: local
+  db-data:
+    driver: local
