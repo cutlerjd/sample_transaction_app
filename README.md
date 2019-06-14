@@ -36,6 +36,6 @@ The docker-compose file shows how they're all launched. Things like `target` in 
 
 ### Who am I?
 
-An idiot. I spent way too long playing with the docker stuff because I love repeatable builds and developer tooling. Sorry it didn't meat all the requirements.
+An idiot. I spent way too long playing with the docker stuff because I love repeatable builds and developer tooling. Sorry it didn't meet all the requirements.
 
 Jase Cutler
